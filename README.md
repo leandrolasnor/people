@@ -13,8 +13,8 @@
 1. Rode o comando no Visual Code e dê ___Enter___.
     - `> Dev Containers: Clone Repository in Container Volume...`
 2. Informe o _URL_ do repositório e dê ___Enter___
-    - `https://gitlab.com/siedos.lasnor/challenge`
-    - `git@gitlab.com:siedos.lasnor/challenge.git`
+    - `https://github.com/leandrolasnor/people.git`
+    - `git@github.com:leandrolasnor/people.git`
 3. :hourglass_flowing_sand: Aguarde o ambiente ser construído
 
 4. Abra o terminal integrado e rode:
