@@ -1,0 +1,55 @@
+# docker-compose.yml
+version: '3.8'
+services:
+  redis:
+    image: redis:alpine
+    container_name: siedos.redis
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+
+  api:
+    image: leandrolasnor/ruby:siedos
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    container_name: siedos.api
+    stdin_open: true
+    tty: true
+    command: sh
+    environment:
+      REDIS_URL: "redis://redis:6379/0"
+      CABLE_URL: "ws://cable:28080"
+      MEILISEARCH_ACCESS_KEY: "key"
+      MEILISEARCH_URL: "http://meilisearch:7700"
+    ports:
+    - 3000:3000
+    - 3001:3001
+    depends_on:
+    - redis
+    - db
+
+  db:
+    image: bitnami/postgresql:latest
+    container_name: siedos.postgresql
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: siedos
+
+
+  db_test:
+    image: bitnami/postgresql:latest
+    container_name: siedos.postgresql_test
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: siedos
+
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: siedos.meilisearch
+    environment:
+      MEILI_MASTER_KEY: key
+      MEILI_NO_ANALYTICS: true
+    ports:
+    - 7700:7700
