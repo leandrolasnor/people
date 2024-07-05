@@ -1,0 +1,806 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/v1/job_roles":
+    get:
+      summary: get job roles
+      tags:
+      - Job Roles
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 8738
+                    title:
+                      type: string
+                      example: Engineer
+  "/v1/people/{id}/detach":
+    delete:
+      summary: detach document
+      tags:
+      - People
+      parameters:
+      - name: id
+        in: path
+        example: 2345
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: string
+                nullable: true
+                example:
+  "/v1/people/{id}/attach":
+    post:
+      summary: attach document
+      tags:
+      - People
+      parameters:
+      - name: id
+        in: path
+        example: 2345
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 123
+                  registration: 12123432345
+                  name: Alexandre
+                  date_birth: '1990-07-07'
+                  state_birth: Goiás
+                  city_birth: Goiania
+                  marital_status: divorciado
+                  gender: M
+                  docs:
+                  - id: 234
+                    filename: file.pdf
+                  contacts:
+                  - id: 2342
+                    email: test@test.com
+                    phone: "+5522234523456"
+                    mobile: "+5589386958495"
+                  job_role:
+                    id: 23
+                    title: role
+                  workspace:
+                    id: 89
+                    title: department
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+        description: File PDF
+  "/v1/people/search":
+    get:
+      summary: search people
+      tags:
+      - People
+      parameters:
+      - name: query
+        in: query
+        description: query
+        example: Silva
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: pagination
+        example: '1'
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: pagination
+        example: '3'
+        schema:
+          type: integer
+      - name: sort
+        in: query
+        description: sort
+        required: false
+        example: name:desc
+        schema:
+          type: string
+      - name: filter[]
+        in: query
+        items:
+          type: string
+        collectionFormat: multi
+        example:
+        - gender = 'F'
+        - job_role = 'Human Resources'
+        - workspace = 'Information Technology'
+        schema:
+          type: array
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  hits: []
+                  totalHits: 50
+                  totalPages: 4
+                  processingTimeMs: 0
+                  hitsPerPage: 10
+                  page: 1
+                  query: query
+  "/v1/people/marital_statuses":
+    get:
+      summary: get marital statues
+      tags:
+      - People
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example:
+                - solteiro
+                - casado
+                - divorciado
+  "/v1/people/genders":
+    get:
+      summary: get genders
+      tags:
+      - People
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example:
+                - F
+                - M
+  "/v1/people":
+    post:
+      summary: create a person
+      tags:
+      - People
+      parameters: []
+      responses:
+        '201':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 4738
+                  name:
+                    type: string
+                    example: Ramon Valdez
+                  registration:
+                    type: string
+                    example: '1657549823'
+                  date_birth:
+                    type: string
+                    example: 23/12/1963
+                  marital_status:
+                    type: string
+                    example: solteiro
+                  state_birth:
+                    type: string
+                    example: Goiás
+                  city_birth:
+                    type: string
+                    example: Goiânia
+                  gender:
+                    type: string
+                    example: M
+                  job_role:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2343
+                      title:
+                        type: string
+                        example: Engenheiro de Educação
+                    required:
+                    - id
+                    - title
+                  workspace:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 4567
+                      title:
+                        type: string
+                        example: Risk Management
+                    required:
+                    - id
+                    - title
+                  contacts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        phone:
+                          type: string
+                        mobile:
+                          type: string
+                required:
+                - id
+                - name
+                - registration
+                - date_birth
+                - state_birth
+                - city_birth
+                - job_role
+                - workspace
+                - gender
+                - contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Forrest Gump
+                registration:
+                  type: string
+                  example: '1336670851'
+                date_birth:
+                  type: string
+                  example: 29/12/1966
+                marital_status:
+                  type: string
+                  example: solteiro
+                state_birth:
+                  type: string
+                  example: Goiás
+                city_birth:
+                  type: string
+                  example: Goiânia
+                job_role_id:
+                  type: integer
+                  example: 7
+                workspace_id:
+                  type: integer
+                  example: 9
+                gender:
+                  type: string
+                  example: M
+                contacts_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: email@test.com
+                      phone:
+                        type: string
+                        example: "+5521945934956"
+                      mobile:
+                        type: string
+                        example: "+5523453234423"
+              required:
+              - name
+              - registration
+              - job_role_id
+              - workspace_id
+  "/v1/people/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show person
+      tags:
+      - People
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 4738
+                  name:
+                    type: string
+                    example: Ramon Valdez
+                  registration:
+                    type: string
+                    example: '1657549823'
+                  date_birth:
+                    type: string
+                    example: 23/12/1963
+                  marital_status:
+                    type: string
+                    example: solteiro
+                  state_birth:
+                    type: string
+                    example: Goiás
+                  city_birth:
+                    type: string
+                    example: Goiânia
+                  gender:
+                    type: string
+                    example: M
+                  job_role:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2343
+                      title:
+                        type: string
+                        example: Engenheiro de Educação
+                    required:
+                    - id
+                    - title
+                  workspace:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 4567
+                      title:
+                        type: string
+                        example: Risk Management
+                    required:
+                    - id
+                    - title
+                  contacts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        phone:
+                          type: string
+                        mobile:
+                          type: string
+                required:
+                - id
+                - name
+                - registration
+                - date_birth
+                - state_birth
+                - city_birth
+                - job_role
+                - workspace
+                - gender
+                - contacts
+    patch:
+      summary: update person
+      tags:
+      - People
+      parameters:
+      - name: id
+        in: path
+        example: 3543
+        required: true
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 4738
+                  name:
+                    type: string
+                    example: Ramon Valdez
+                  registration:
+                    type: string
+                    example: '1657549823'
+                  date_birth:
+                    type: string
+                    example: 23/12/1963
+                  marital_status:
+                    type: string
+                    example: solteiro
+                  state_birth:
+                    type: string
+                    example: Goiás
+                  city_birth:
+                    type: string
+                    example: Goiânia
+                  gender:
+                    type: string
+                    example: M
+                  job_role:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2343
+                      title:
+                        type: string
+                        example: Engenheiro de Educação
+                    required:
+                    - id
+                    - title
+                  workspace:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 4567
+                      title:
+                        type: string
+                        example: Risk Management
+                    required:
+                    - id
+                    - title
+                  contacts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        phone:
+                          type: string
+                        mobile:
+                          type: string
+                required:
+                - id
+                - name
+                - registration
+                - date_birth
+                - state_birth
+                - city_birth
+                - job_role
+                - workspace
+                - gender
+                - contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 2343
+                name:
+                  type: string
+                  example: Forrest Gump
+                registration:
+                  type: string
+                  example: '1336670851'
+                date_birth:
+                  type: string
+                  example: 29/12/1966
+                marital_status:
+                  type: string
+                  example: solteiro
+                state_birth:
+                  type: string
+                  example: Goiás
+                city_birth:
+                  type: string
+                  example: Goiânia
+                job_role_id:
+                  type: integer
+                  example: 7
+                workspace_id:
+                  type: integer
+                  example: 9
+                gender:
+                  type: string
+                  example: M
+                contacts_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: email@test.com
+                      phone:
+                        type: string
+                        example: "+5521945934956"
+                      mobile:
+                        type: string
+                        example: "+5523453234423"
+              required:
+              - name
+              - registration
+              - job_role_id
+              - workspace_id
+    put:
+      summary: update person
+      tags:
+      - People
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 4738
+                  name:
+                    type: string
+                    example: Ramon Valdez
+                  registration:
+                    type: string
+                    example: '1657549823'
+                  date_birth:
+                    type: string
+                    example: 23/12/1963
+                  marital_status:
+                    type: string
+                    example: solteiro
+                  state_birth:
+                    type: string
+                    example: Goiás
+                  city_birth:
+                    type: string
+                    example: Goiânia
+                  gender:
+                    type: string
+                    example: M
+                  job_role:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2343
+                      title:
+                        type: string
+                        example: Engenheiro de Educação
+                    required:
+                    - id
+                    - title
+                  workspace:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 4567
+                      title:
+                        type: string
+                        example: Risk Management
+                    required:
+                    - id
+                    - title
+                  contacts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        phone:
+                          type: string
+                        mobile:
+                          type: string
+                required:
+                - id
+                - name
+                - registration
+                - date_birth
+                - state_birth
+                - city_birth
+                - job_role
+                - workspace
+                - gender
+                - contacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 2343
+                name:
+                  type: string
+                  example: Forrest Gump
+                registration:
+                  type: string
+                  example: '1336670851'
+                date_birth:
+                  type: string
+                  example: 29/12/1966
+                marital_status:
+                  type: string
+                  example: solteiro
+                state_birth:
+                  type: string
+                  example: Goiás
+                city_birth:
+                  type: string
+                  example: Goiânia
+                job_role_id:
+                  type: integer
+                  example: 7
+                workspace_id:
+                  type: integer
+                  example: 9
+                gender:
+                  type: string
+                  example: M
+                contacts_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: email@test.com
+                      phone:
+                        type: string
+                        example: "+5521945934956"
+                      mobile:
+                        type: string
+                        example: "+5523453234423"
+              required:
+              - name
+              - registration
+              - job_role_id
+              - workspace_id
+    delete:
+      summary: destroy person
+      tags:
+      - People
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 4738
+                  name:
+                    type: string
+                    example: Ramon Valdez
+                  registration:
+                    type: string
+                    example: '1657549823'
+                  date_birth:
+                    type: string
+                    example: 23/12/1963
+                  marital_status:
+                    type: string
+                    example: solteiro
+                  state_birth:
+                    type: string
+                    example: Goiás
+                  city_birth:
+                    type: string
+                    example: Goiânia
+                  job_role_id:
+                    type: integer
+                    example: 21
+                  workspace_id:
+                    type: integer
+                    example: 34
+                  gender:
+                    type: string
+                    example: M
+                required:
+                - id
+                - name
+                - registration
+                - date_birth
+                - state_birth
+                - city_birth
+                - job_role_id
+                - workspace_id
+                - gender
+  "/v1/people/download_pdf.pdf":
+    get:
+      summary: download people report pdf
+      tags:
+      - People
+      responses:
+        '200':
+          description: successful
+          content:
+            application/pdf:
+              schema:
+                type: file
+                nullable: true
+  "/v1/people/download_csv.csv":
+    get:
+      summary: download people report csv
+      tags:
+      - People
+      responses:
+        '200':
+          description: successful
+          content:
+            text/csv:
+              schema:
+                type: file
+                nullable: true
+  "/v1/workspaces":
+    get:
+      summary: get workspaces
+      tags:
+      - Workspaces
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2343
+                    title:
+                      type: string
+                      example: Department
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
