@@ -5,8 +5,6 @@ class UpdatePerson::Monad
   include Dry.Types()
   extend  Dry::Initializer
 
-  option :person, type: Interface(:find), default: -> { UpdatePerson::Model::Person }, reader: :private
-
   def call(record:, **params)
     Try do
       record.transaction do
